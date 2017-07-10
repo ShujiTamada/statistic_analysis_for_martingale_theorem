@@ -35,6 +35,7 @@ class SDE_Markov:
     def one_step(self,now_position=np.array([1,1]),parameter=1):
         random_variable_T=np.random.normal(self.normal_mean,self.normal_scale,self.dimen).reshape(self.dimen,1)
         #reshape ベクトルの形を指定する
+        #pdb.set_trace()
         now_position_T=now_position.reshape(self.dimen,1)
         new_position=parameter*now_position_T+np.dot(self.transform_matrix, now_position_T)+np.dot(self.noize_var_matrix, random_variable_T)
         return(new_position)
@@ -76,25 +77,26 @@ class SDE_Markov:
         return(now_position)
 
 
-    def tragectory(self,myTerm = 100.,now_position=np.array([1,1])):
+    def trajectory(self,myTerm = 100.,now_position=np.array([1,1])):
         times= myTerm/self.division
         times_number=int(times)
-        tragectory_box=np.zeros((self.dimen,times_number))
+        trajectory_box=np.zeros((self.dimen,times_number))
         for k in range(times_number):
             new_position = self.one_step(now_position)
-            tragectory_box[:,k]=new_position
+            trajectory_box[:,k]=new_position
             now_position=new_position
-        return(tragectory_box)
+        #pdb.set_trace()
+        return(trajectory_box)
 
-    def tragectory_martingale(self,myTerm = 100.,now_position=np.array([1,1])):
+    def trajectory_martingale(self,myTerm = 100.,now_position=np.array([1,1])):
         times= myTerm/self.division
         times_number=int(times)
-        tragectory_box=np.zeros((self.dimen,times_number))
+        trajectory_box=np.zeros((self.dimen,times_number))
         for k in range(times_number):
             new_position = self.one_step_martingale(now_position)
-            tragectory_box[:,k]=new_position
+            trajectory_box[:,k]=new_position
             now_position=new_position
-        return(tragectory_box)
+        return(trajectory_box)
 
 
     def sanity_check(self):#警報機みたいなもの
