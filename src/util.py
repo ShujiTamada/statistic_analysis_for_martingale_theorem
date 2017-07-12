@@ -8,15 +8,15 @@ import pdb
 figpath = "../figs"
 datpath = "../data"
 
-def simulate(filename):
-    mymodel = sde.SDE_Markov(mymat=np.array([[0.5]]), \
-    myvar =np.array([[1.]]),myinit=np.array([1.]),myscale=1.)
+def simulate(filename,term,step,init):
+    mymodel = sde.SDE_Markov(mymat=np.array([[0.]]), myvar =np.array([[1.]]),\
+    myinit=init,myscale=1.,myterm=term,step_size=step)
 
     #Trajectory must also return time for the real implementation
-    trajectory = mymodel.trajectory(now_position=np.array([0]))
+    trajectory = mymodel.many_step(now_position=init)
 
     #YOU MUST CHANGE THIS!!!
-    times = np.array(range(len(trajectory[0])))
+    times = np.arange(0,term,step)
     #pdb.set_trace()
 
     plt.plot(times, trajectory[0])
