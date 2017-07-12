@@ -17,7 +17,6 @@ def simulate(filename,term,step,init):
 
     #YOU MUST CHANGE THIS!!!
     times = np.arange(0,term,step)
-    #pdb.set_trace()
 
     plt.plot(times, trajectory[0])
     filepath= os.path.join(figpath, filename)

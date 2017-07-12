@@ -54,17 +54,6 @@ class SDE_Markov:
             now_position = new_position
         return(trajectory_box)
 
-    def trajectory(self,myTerm = 100.,now_position=np.array([1,1])):
-        times= myTerm/self.division
-        times_number=int(times)
-        trajectory_box=np.zeros((self.dimen,times_number))
-        for k in range(times_number):
-            new_position = self.one_step(now_position)
-            trajectory_box[:,k]=new_position
-            now_position=new_position
-        #pdb.set_trace()
-        return(trajectory_box)
-
 
     def sanity_check(self):#警報機みたいなもの
         #pdb.set_trace()
