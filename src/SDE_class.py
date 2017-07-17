@@ -47,10 +47,11 @@ class SDE_Markov:
 
     def many_step(self,now_position=np.array([1,1])):
         division=int(self.division)
-        trajectory_box=np.zeros((self.dimen,division))
+        trajectory_box=np.zeros((self.dimen,division+1))
+        trajectory_box[:,0]=now_position
         for k in range(division):
             new_position = self.one_step(now_position)
-            trajectory_box[:,k]=new_position
+            trajectory_box[:,k+1]=new_position
             now_position = new_position
         return(trajectory_box)
 
