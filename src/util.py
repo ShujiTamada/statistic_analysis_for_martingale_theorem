@@ -16,7 +16,7 @@ def simulate(filename,term,step,init):
     trajectory = mymodel.many_step(now_position=init)
 
     #YOU MUST CHANGE THIS!!!
-    times = np.arange(0,term,step)
+    times = np.arange(0,term+step,step)
 
     plt.plot(times, trajectory[0])
     filepath= os.path.join(figpath, filename)
