@@ -45,12 +45,6 @@ class SDE_Markov:
         +np.dot(self.noise_var_matrix, random_variable_T)*np.sqrt(self.deltaT)
         return(new_position)
 
-    def one_step_test(self,now_position=np.array([1,1])):
-        random_variable_T=(np.random.normal(self.normal_mean,self.normal_scale,self.dimen)/np.sqrt(self.normal_scale*self.deltaT)).reshape(self.dimen,1)
-        now_position_T=now_position.reshape(self.dimen,1)
-        new_position=now_position_T+np.dot(self.transform_matrix_step, now_position_T)*self.deltaT\
-        +np.dot(self.noise_var_matrix, random_variable_T)*np.sqrt(self.deltaT)
-        return(new_position)
 
     def many_step(self,now_position=np.array([1,1])):
         division=int(self.division)
@@ -62,15 +56,6 @@ class SDE_Markov:
             now_position = new_position
         return(trajectory_box)
 
-    def many_step_test(self,now_position=np.array([1,1])):
-        division=int(self.division)
-        trajectory_box=np.zeros((self.dimen,division+1))
-        trajectory_box[:,0]=now_position
-        for k in range(division):
-            new_position = self.one_step_test(now_position)
-            trajectory_box[:,k+1]=new_position
-            now_position = new_position
-        return(trajectory_box)
 
     def sanity_check(self):#警報機みたいなもの
         #pdb.set_trace()
