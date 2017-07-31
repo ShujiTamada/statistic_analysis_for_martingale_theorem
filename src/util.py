@@ -7,6 +7,8 @@ import pdb
 
 figpath = "../figs"
 datpath = "../data"
+unko = 0
+
 
 def simulate(filename,term,step,init):
     mymodel = sde.SDE_Markov(mymat=np.array([[0.]]), myvar =np.array([[1.]]),\
