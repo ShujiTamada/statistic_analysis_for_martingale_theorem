@@ -4,6 +4,8 @@ import numpy as np#パッケージはクラスの外におかないといけな�
 import pdb
 from matplotlib import pyplot as plt
 
+koyamaSAN = None
+
 '''
 mymat:遷移行列 デフォルト2×2
 mymat_noise:ノイズ項の遷移行列 デフォルト2×2
