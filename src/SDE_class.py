@@ -30,7 +30,7 @@ class SDE_Markov:
         self.transform_matrix_noise=mymat_noise
         self.noise_var_matrix= myvar#ノイズ行列
         self.terminal= myterm#終点時間
-        self.deltaT = step_size
+        self.deltaT = step_size#飛び幅
         self.division= self.terminal/self.deltaT#分割数
         self.normal_mean= mymean#ノイズ正規分布の平均
         self.normal_scale= myscale#ノイズ正規分布の分散
@@ -42,6 +42,7 @@ class SDE_Markov:
 
     def one_step(self,now_position=np.array([1,1])):
         random_variable_T=np.random.normal(self.normal_mean,self.normal_scale,self.dimen).reshape(self.dimen,1)
+        #確率変数の生成
         now_position_T=now_position.reshape(self.dimen,1)
         new_position=now_position_T+np.dot(self.transform_matrix_step, now_position_T)*self.deltaT\
         +np.dot(self.noise_var_matrix, random_variable_T)*np.sqrt(self.deltaT)
@@ -49,6 +50,16 @@ class SDE_Markov:
 
 
     def many_step(self,now_position=np.array([1,1])):
+        division=int(self.division)#発生させたいpassの次元
+        trajectory_box=np.zeros((self.dimen,division+1))#passの値を入れる箱
+        trajectory_box[:,0]=now_position
+        for k in range(division):
+            new_position = self.one_step(now_position)
+            trajectory_box[:,k+1]=new_position
+            now_position = new_position
+        return(trajectory_box)
+
+    def many_step_2(self,now_position=np.array([1,1])):
         division=int(self.division)
         trajectory_box=np.zeros((self.dimen,division+1))
         trajectory_box[:,0]=now_position
@@ -56,7 +67,13 @@ class SDE_Markov:
             new_position = self.one_step(now_position)
             trajectory_box[:,k+1]=new_position
             now_position = new_position
-        return(trajectory_box)
+        #times=np.zeros((self.dimen,self.terminal*self.deltaT+1))
+        times = np.arange(0,self.terminal+self.deltaT,self.deltaT)
+        times.reshape(11,1)
+        times.shape
+        trajectory_box.shape
+        plt.plot(times, trajectory_box)
+        return(trajectory_box,trajectory_box.shape,times,times.shape)
 
 
     def sanity_check(self):#警報機みたいなもの
