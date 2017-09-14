@@ -23,7 +23,7 @@ X(t)=X(t-1)+mymat*X(t-1)+myvar*normal
 ノイズ項の形が合わない
 '''
 
-class SDE_Markov:
+class SDE_Markov(object):
     def __init__(self, mymat = np.eye(2),mymat_noise = np.eye(2),myvar = np.eye(2),myterm= 10,\
     mymean = 0 , myscale =1,myinit = np.array([1,1]),step_size=0.1):
         self.transform_matrix_step= mymat#遷移行列
@@ -59,7 +59,9 @@ class SDE_Markov:
             now_position = new_position
         return(trajectory_box)
 
-    def many_step_2(self,now_position=np.array([1,1])):
+    def many_step_2(self):
+
+        now_position = self.init
         division=int(self.division)
         trajectory_box=np.zeros((self.dimen,division+1))
         trajectory_box[:,0]=now_position
@@ -69,11 +71,28 @@ class SDE_Markov:
             now_position = new_position
         #times=np.zeros((self.dimen,self.terminal*self.deltaT+1))
         times = np.arange(0,self.terminal+self.deltaT,self.deltaT)
-        times.reshape(11,1)
-        times.shape
-        trajectory_box.shape
-        plt.plot(times, trajectory_box)
-        return(trajectory_box,trajectory_box.shape,times,times.shape)
+        #times = np.asarray(times).reshape(1,len(times))
+        return(times, trajectory_box)
+
+
+    def simulation(self, numsamples = 10):
+        sampledat = []
+        for k in range(numsamples):
+            times, trajectory_box = self.many_step_2()
+            trajectory = trajectory_box[0]
+            sampledat.append(trajectory)
+        return(times, sampledat)
+
+
+
+    def saveFig(self,figpath, numsamples= 10):
+        times, trajectory_box = self.simulation(numsamples)
+        pdb.set_trace()
+
+        for k in range(len(trajectory_box)):
+            k_th_trajectory = trajectory_box[k]
+            myfig = plt.plot(times, k_th_trajectory, color='r')
+        plt.savefig(figpath)
 
 
     def sanity_check(self):#警報機みたいなもの
