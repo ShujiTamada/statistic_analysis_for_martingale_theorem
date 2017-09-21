@@ -3,7 +3,7 @@
 import numpy as np#パッケージはクラスの外におかないといけない
 import pdb
 from matplotlib import pyplot as plt
-
+import pdb
 koyamaSAN = None
 
 '''
@@ -24,27 +24,55 @@ X(t)=X(t-1)+mymat*X(t-1)+myvar*normal
 '''
 
 class SDE_Markov:
-    def __init__(self, mymat = np.eye(2),mymat_noise = np.eye(2),myvar = np.eye(2),myterm= 10,\
-    mymean = 0 , myscale =1,myinit = np.array([1,1]),step_size=0.1):
-        self.transform_matrix_step= mymat#遷移行列
-        self.transform_matrix_noise=mymat_noise
-        self.noise_var_matrix= myvar#ノイズ行列
-        self.terminal= myterm#終点時間
-        self.deltaT = step_size
-        self.division= self.terminal/self.deltaT#分割数
-        self.normal_mean= mymean#ノイズ正規分布の平均
-        self.normal_scale= myscale#ノイズ正規分布の分散
-        self.dimen = len(myinit)#次元
-        self.init= myinit.reshape(self.dimen, 1)#初期値(ベクトル)
+    def __init__(self, **keyargs):
+
+
+        self.key = keyargs
+        #mymat = mykey['mat']
+        #mymat_noise = mykey['mat_noise']
+        #myvar = mykey['var']
+        #myterm = mykey['term']
+        #mymean = mykey['mean']
+        #mymat = mykey['mat']
+        #myscale = mykey['scale']
+        #myinit = mykey['init']
+        #step_size = mykey['stepsize']
+
+        #classの与えたい変数一覧 辞書式にする事によって順番を無視できる
+        self.default_initialize()
+
+        #self.transform_matrix_step= mymat#遷移行列
+        #self.transform_matrix_noise=mymat_noise
+        #self.noise_var_matrix= myvar#ノイズ行列
+        self.terminal= self.key['term'] #終点時間
+        self.deltaT = self.key['stepsize']
+        self.division= np.ceil(self.terminal/self.deltaT)#分割数
+        #self.normal_mean= mymean#ノイズ正規分布の平均
+        #self.normal_scale= myscale#ノイズ正規分布の分散
+        self.dimen = len(self.key['init'])#次元
+        self.init= self.key['init'].reshape(self.dimen, 1)#初期値(ベクトル)
 
         self.sanity_check()
 
+    def default_initialize(self):#デフォルト値入力
+        if self.key['default'] :
+            pass
+        else:
+            pass
+
+    def aho(self):
+        print(9999)
+
+    def unko(self):
+        print("Tamachan will go to Marine")
+
 
     def one_step(self,now_position=np.array([1,1])):
-        random_variable_T=np.random.normal(self.normal_mean,self.normal_scale,self.dimen).reshape(self.dimen,1)
-        now_position_T=now_position.reshape(self.dimen,1)
-        new_position=now_position_T+np.dot(self.transform_matrix_step, now_position_T)*self.deltaT\
-        +np.dot(self.noise_var_matrix, random_variable_T)*np.sqrt(self.deltaT)
+        #random_variable_T=np.random.normal(self.normal_mean,self.normal_scale,self.dimen).reshape(self.dimen,1)
+        #now_position_T=now_position.reshape(self.dimen,1)
+        #new_position=now_position_T+np.dot(self.transform_matrix_step, now_position_T)*self.deltaT\
+        #+np.dot(self.noise_var_matrix, random_variable_T)*np.sqrt(self.deltaT)
+        now_position = new_position
         return(new_position)
 
 
@@ -58,6 +86,15 @@ class SDE_Markov:
             #now_position = new_position
         #return(trajectory_box)
 
+    def many_step(self, **keyargs):
+        trajectory_box=np.zeros((self.dimen,self.division+1))
+        trajectory_box[:,0]=now_position
+        for k in range(division):
+            new_position = self.one_step(now_position)
+            trajectory_box[:,k+1]=new_position
+            now_position = new_position
+        return(trajectory_box)
+    '''
     def many_step(self):
         now_position = self.init
         division=int(self.division)
@@ -71,7 +108,6 @@ class SDE_Markov:
         times = np.arange(0,self.terminal+self.deltaT,self.deltaT)
         #times = np.asarray(times).reshape(1,len(times))
         return(times, trajectory_box)
-
     def simulation(self, numsamples = 10):
         sampledat = []
         for k in range(numsamples):
@@ -79,6 +115,7 @@ class SDE_Markov:
             trajectory = trajectory_box[0]
             sampledat.append(trajectory)
         return(times, sampledat)
+    '''
 
 
 
@@ -93,6 +130,8 @@ class SDE_Markov:
 
 
     def sanity_check(self):#警報機みたいなもの
+        pass
+        '''
         if len(self.transform_matrix_step.shape)<2 or\
          len(self.noise_var_matrix.shape)<2:
             print("you must input a matrix for the transformation and noise!!")
@@ -103,6 +142,7 @@ class SDE_Markov:
                 print("Transformation dimension mismatch!! ")
             if mymatD2 !=  mymatD:
                 print("noise and transformation dimension mismatch!! ")
+        '''
 #pdb.set_trace()　エラーの場所を探すコード
 #行列の設定方法
 #np.array([[],[],[]])
