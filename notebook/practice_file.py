@@ -34,7 +34,7 @@ def main():
     sdekey['mean'] = 1.0
 
 
-    #mymodel = sde.SDE_Markov(**sdekey)
+    mymodel = sde.SDE_Markov(**sdekey)
     simulate=bmt.brown_motion(**sdekey)
 
     #transform_matrix_step=np.array([[0.]]),transform_matrix_noise=np.array([[1.]]),noise_var_matrix,terminal,\

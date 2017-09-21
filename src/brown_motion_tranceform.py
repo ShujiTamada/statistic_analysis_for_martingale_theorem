@@ -19,9 +19,8 @@ import os
 
 
 class brown_motion(sde.SDE_Markov):
-    def __init__(self):
-        pdb.set_trace()
-        super().__init__(self, **keyargs)
+    def __init__(self,**keyargs):
+        super(brown_motion, self).__init__(**keyargs)#関数で使う時はselfはいらない
         mean = keyargs['mean']
         var  = keyargs['variance']
      #新しい変数は self.を作る？？
