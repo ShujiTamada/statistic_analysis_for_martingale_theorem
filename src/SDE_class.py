@@ -23,14 +23,14 @@ X(t)=X(t-1)+mymat*X(t-1)+myvar*normal
 ノイズ項の形が合わない
 '''
 
-class SDE_Markov(object):
+class SDE_Markov:
     def __init__(self, mymat = np.eye(2),mymat_noise = np.eye(2),myvar = np.eye(2),myterm= 10,\
     mymean = 0 , myscale =1,myinit = np.array([1,1]),step_size=0.1):
         self.transform_matrix_step= mymat#遷移行列
         self.transform_matrix_noise=mymat_noise
         self.noise_var_matrix= myvar#ノイズ行列
         self.terminal= myterm#終点時間
-        self.deltaT = step_size#飛び幅
+        self.deltaT = step_size
         self.division= self.terminal/self.deltaT#分割数
         self.normal_mean= mymean#ノイズ正規分布の平均
         self.normal_scale= myscale#ノイズ正規分布の分散
@@ -42,25 +42,23 @@ class SDE_Markov(object):
 
     def one_step(self,now_position=np.array([1,1])):
         random_variable_T=np.random.normal(self.normal_mean,self.normal_scale,self.dimen).reshape(self.dimen,1)
-        #確率変数の生成
         now_position_T=now_position.reshape(self.dimen,1)
         new_position=now_position_T+np.dot(self.transform_matrix_step, now_position_T)*self.deltaT\
         +np.dot(self.noise_var_matrix, random_variable_T)*np.sqrt(self.deltaT)
         return(new_position)
 
 
-    def many_step(self,now_position=np.array([1,1])):
-        division=int(self.division)#発生させたいpassの次元
-        trajectory_box=np.zeros((self.dimen,division+1))#passの値を入れる箱
-        trajectory_box[:,0]=now_position
-        for k in range(division):
-            new_position = self.one_step(now_position)
-            trajectory_box[:,k+1]=new_position
-            now_position = new_position
-        return(trajectory_box)
+    #def many_step(self,now_position=np.array([1,1])):
+        #division=int(self.division)
+        #trajectory_box=np.zeros((self.dimen,division+1))
+        #trajectory_box[:,0]=now_position
+        #for k in range(division):
+            #new_position = self.one_step(now_position)
+            #trajectory_box[:,k+1]=new_position
+            #now_position = new_position
+        #return(trajectory_box)
 
-    def many_step_2(self):
-
+    def many_step(self):
         now_position = self.init
         division=int(self.division)
         trajectory_box=np.zeros((self.dimen,division+1))
@@ -74,11 +72,10 @@ class SDE_Markov(object):
         #times = np.asarray(times).reshape(1,len(times))
         return(times, trajectory_box)
 
-
     def simulation(self, numsamples = 10):
         sampledat = []
         for k in range(numsamples):
-            times, trajectory_box = self.many_step_2()
+            times, trajectory_box = self.many_step()
             trajectory = trajectory_box[0]
             sampledat.append(trajectory)
         return(times, sampledat)
@@ -87,7 +84,7 @@ class SDE_Markov(object):
 
     def saveFig(self,figpath, numsamples= 10):
         times, trajectory_box = self.simulation(numsamples)
-        pdb.set_trace()
+        #pdb.set_trace()
 
         for k in range(len(trajectory_box)):
             k_th_trajectory = trajectory_box[k]
@@ -96,7 +93,6 @@ class SDE_Markov(object):
 
 
     def sanity_check(self):#警報機みたいなもの
-        #pdb.set_trace()
         if len(self.transform_matrix_step.shape)<2 or\
          len(self.noise_var_matrix.shape)<2:
             print("you must input a matrix for the transformation and noise!!")
