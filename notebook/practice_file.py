@@ -18,20 +18,33 @@ import pdb
 import os
 
 def main():
+    #SDE_Markov variation_number
+    term=1#terminal_time
+    step=0.1#step_size
+    div=term/step#jump_number
+    init=np.array([1000.])#init_value
+    
+    #brown_motion_tranceform variation_number
+    #matrix=
+    #mat_noise=
+    #var_matrix=
+    mean=0
+    variance=1
 
-    term=1#最終時刻
-    step=0.1#刻み幅
-    div=term/step#飛ぶ回数
-    init=np.array([0.])#初期値
-    #repeat_time=20000#pass本数
-    #S=0
+
+
+
     sdekey={}
     sdekey['default'] = True
     sdekey['init'] = init
     sdekey['stepsize'] = step
     sdekey['term'] = term
-    sdekey['variance'] = 1.0
-    sdekey['mean'] = 1.0
+
+    sdekey['mat'] = np.array([[1.]])
+    #sdekey['mat_noise'] = 1.0
+    sdekey['var_matrix'] = np.array([[1.]])
+    sdekey['n_mean'] = mean
+    sdekey['n_scale'] = variance
 
 
     mymodel = sde.SDE_Markov(**sdekey)
@@ -40,7 +53,8 @@ def main():
     #transform_matrix_step=np.array([[0.]]),transform_matrix_noise=np.array([[1.]]),noise_var_matrix,terminal,\
     #deltaT,division,normal_mean,normal_scale,dimen,init
 
-    #brown_motion_nomal=simulate.brown_motion_nomal()
+    brown_motion_nomal=simulate.simulation()
+    print(brown_motion_nomal)
 
 if __name__ == '__main__':
     main()
