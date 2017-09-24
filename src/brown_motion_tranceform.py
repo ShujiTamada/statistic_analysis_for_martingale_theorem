@@ -57,47 +57,59 @@ class brown_motion(sde.SDE_Markov):
             sampledat.append(trajectory)
         return(times, sampledat)
 
+    def saveFig(self,numsamples= 10):
+        times, trajectory_box = self.simulation(numsamples)
+        for k in range(len(trajectory_box)):
+            k_th_trajectory = trajectory_box[k]
+            myfig = plt.plot(times, k_th_trajectory, color='r')
+        #plt.savefig(figpath),figpath
+
 
 
     def brown_motion_nomal(self,**keyargs):
         trajectory_box=np.zeros((self.dimen,self.division+1))
-        qv_box=np.zeros((self.dimen,self.division))
+        qv_box=np.zeros((self.dimen,self.division+1))
         now_position = self.init
         trajectory_box[:,0]=now_position
         qv_box[:,0]=0
         for k in range(self.division):
             new_position = self.one_step(now_position)
-            qv_box[:,k]=qv_box[:,k]+(now_position-new_position)**2
+            qv_box[:,k+1]=qv_box[:,k]+(now_position-new_position)**2
             trajectory_box[:,k+1]=new_position
             now_position = new_position
-        trajectory = trajectory_box[0]
-        return(trajectory,qv_box)
+        #trajectory = trajectory_box[0]
+        times = np.arange(0,self.terminal+self.deltaT,self.deltaT)
+        times = np.asarray(times).reshape(1,len(times))
+        return(times,trajectory_box,qv_box)
 
     def brown_motion_square(self,**keyargs):
         trajectory_box=np.zeros((self.dimen,self.division+1))
-        qv_box=np.zeros((self.dimen,self.division))
+        qv_box=np.zeros((self.dimen,self.division+1))
         now_position = self.init
         trajectory_box[:,0]=now_position**2
         qv_box[:,0]=0
         for k in range(self.division):
             new_position = self.one_step(now_position)**2
-            qv_box[:,k]=qv_box[:,k]+(now_position-new_position)**2
+            qv_box[:,k+1]=qv_box[:,k]+(now_position-new_position)**2
             trajectory_box[:,k+1]=new_position
             now_position = new_position
-        trajectory = trajectory_box[0]
-        return(trajectory,qv_box)
+        #trajectory = trajectory_box[0]
+        times = np.arange(0,self.terminal+self.deltaT,self.deltaT)
+        times = np.asarray(times).reshape(1,len(times))
+        return(times,trajectory_box,qv_box)
 
-
-    def brown_motion_log(self,**keyargs):
+    def brown_motion_Doob_mayer(self,**keyargs):
         trajectory_box=np.zeros((self.dimen,self.division+1))
-        qv_box=np.zeros((self.dimen,self.division))
+        qv_box=np.zeros((self.dimen,self.division+1))
         now_position = self.init
-        trajectory_box[:,0]=np.log(now_position)
+        trajectory_box[:,0]=now_position**2
         qv_box[:,0]=0
         for k in range(self.division):
-            new_position = np.log(self.one_step(now_position))
-            qv_box[:,k]=qv_box[:,k]+(now_position-new_position)**2
+            new_position = self.one_step(now_position)**2-self.deltaT
+            qv_box[:,k+1]=qv_box[:,k]+(now_position-new_position)**2
             trajectory_box[:,k+1]=new_position
             now_position = new_position
-        trajectory = trajectory_box[0]
-        return(trajectory,qv_box)
+        #trajectory = trajectory_box[0]
+        times = np.arange(0,self.terminal+self.deltaT,self.deltaT)
+        times = np.asarray(times).reshape(1,len(times))
+        return(times,trajectory_box,qv_box)

@@ -1,10 +1,8 @@
 #練習
 import sys
-#sys.path.append("../notebook")
 sys.path.append("../src")#ファイル読み込み
 sys.path.append("../data")#ファイル読み込み
 sys.path.append("../fig")#ファイル読み込み
-#sys.path.append("../SDE_class.py")
 import SDE_class as sde
 import brown_motion_tranceform as bmt
 import importlib #リロード呼ぶ関数
@@ -23,7 +21,7 @@ def main():
     step=0.1#step_size
     div=term/step#jump_number
     init=np.array([1000.])#init_value
-    
+
     #brown_motion_tranceform variation_number
     #matrix=
     #mat_noise=
@@ -53,8 +51,10 @@ def main():
     #transform_matrix_step=np.array([[0.]]),transform_matrix_noise=np.array([[1.]]),noise_var_matrix,terminal,\
     #deltaT,division,normal_mean,normal_scale,dimen,init
 
-    brown_motion_nomal=simulate.simulation()
-    print(brown_motion_nomal)
+    times,trajectory,qv=simulate.brown_motion_nomal()
+    print(times.shape)
+    print(trajectory.shape)
+    print(qv.shape)
 
 if __name__ == '__main__':
     main()
