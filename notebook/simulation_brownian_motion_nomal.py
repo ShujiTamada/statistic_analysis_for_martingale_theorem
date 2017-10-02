@@ -4,7 +4,7 @@ sys.path.append("../src")#road a file
 sys.path.append("../data")#road a file
 sys.path.append("../fig")#road a file
 import SDE_class as sde
-import brown_motion_tranceform as bmt
+from brown_motion import brown_motion as bmt
 import importlib #function to reroad a file
 import numpy as np
 from matplotlib import pyplot as plt
@@ -41,12 +41,14 @@ def main():
     sdekey['n_scale'] = variance
 
     figplace = '../figs'#move to fig file
-    filename= str('brownian_motion_nomnal')
-    brownian_motion_nomnal = os.path.join(figplace,filename)
+    figname= str('brownian_motion_nomnal.png')
+    arrayname= str('brownian_motion_nomnal.npy')
+    arraypath = os.path.join(figplace,arrayname)
+    figpath = os.path.join(figplace,figname)
 
 
     mymodel = sde.SDE_Markov(**sdekey)
-    simulate=bmt.brown_motion(**sdekey)
+    simulate=bmt(**sdekey)
 
     times,trajectory,qv=simulate.brown_motion_nomal()
     '''
@@ -60,8 +62,9 @@ def main():
     times,trajectry_box,qv_box=simulate.brown_motion_nomal()
 
 
-    simulate.saveFig(brownian_motion_nomnal,repeat_time)
-    np.save(brownian_motion_nomnal,trajectory)
+    simulate.saveFigure(figpath,repeat_time)
+
+    np.save(arraypath,trajectory)
 
 
     #plt.plot(times, trajectory[0])
