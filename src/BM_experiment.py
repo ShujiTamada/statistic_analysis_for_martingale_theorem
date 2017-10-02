@@ -25,6 +25,7 @@ def main():
     parser.add_argument('--filename', '-f', type=str, default ='mypath.png', help='filename' )#変数をいじれる。一つ目は関数を作る時のショートカット二つ目がterminalで使えるショートカット
     args= parser.parse_args()#呼び出すショートカット
 
+
     term= args.term
     step= args.step
     init= args.init

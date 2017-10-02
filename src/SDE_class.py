@@ -1,26 +1,26 @@
-#確率微分方程式の実装のためのクラス
 
-import numpy as np#パッケージはクラスの外におかないといけない
+#class to implementation SDE
+
+import numpy as np#Pakkege must be put outside class
 import pdb
 from matplotlib import pyplot as plt
 import pdb
 koyamaSAN = None
 
 '''
-mymat:遷移行列 デフォルト2×2
-mymat_noise:ノイズ項の遷移行列 デフォルト2×2
-myvar:ノイズ行列 デフォルト2×2
+mymat:trancefform matrix
+mymat_noise:noise term trancefform atrix
+myvar:noise matrix
 myterm:終点時間
 mydiv:
-mymean:ノイズ正規分布平均
-myscale:ノイズ正規分布分散
-myinit:初期値 二次元ベクトル
-step_size:一歩の大きさ
+mymean:noise Guiss mean
+myscale:noise Guiss var
+myinit:初期値 second dimension
+step_size:
 '''
 
 '''
 X(t)=X(t-1)+mymat*X(t-1)+myvar*normal
-ノイズ項の形が合わない
 '''
 
 class SDE_Markov:
@@ -28,35 +28,49 @@ class SDE_Markov:
 
 
         self.key = keyargs
-        #classの与えたい変数一覧 辞書式にする事によって順番を無視できる
+        #it can ignore order to use dictionary style
+        #value to use class
         self.default_initialize()
-        self.terminal= self.key['term'] #終点時間
+        self.terminal= self.key['term'] #terminal
         self.deltaT = self.key['stepsize']
-        self.division= int(np.ceil(self.terminal/self.deltaT))#分割数
-        self.dimen = len(self.key['init'])#次元
+        self.division= int(np.ceil(self.terminal/self.deltaT))#divisiton number
+        self.dimen = len(self.key['init'])#dimension
         self.init= self.key['init'].reshape(self.dimen, 1)#初期値(ベクトル)
 
         self.sanity_check()
 
-    def default_initialize(self):#デフォルト値入力
-        if self.key['default'] :
-            pass
+    def default_initialize(self):#put in defolt value
+        if self.key['default']==True :
+            self.key['init']=np.array([1.])
         else:
             pass
 
+    def outcome_output(self,**keyargs):
+        trajectory_box=np.zeros((self.dimen,self.division+1))
+        times=np.arange(0,self.terminal+self.deltaT,self.deltaT)
+        times = np.asarray(times).reshape(1,len(times))
+        return(trajectory_box,times)
 
     def one_step(self,now_position=np.array([1,1])):
         now_position = new_position
         return(new_position)
 
     def many_step(self, **keyargs):
-        trajectory_box=np.zeros((self.dimen,self.division+1))
+        trajectory_box=self.outcome_output
         trajectory_box[:,0]=now_position
         for k in range(division):
             new_position = self.one_step(now_position)
             trajectory_box[:,k+1]=new_position
             now_position = new_position
         return(trajectory_box)
+
+    def simulation(self, numsamples = 10):
+        sampledat = []
+        for k in range(numsamples):
+            times, trajectory_box = self.many_step()
+            trajectory = trajectory_box[0]
+            sampledat.append(trajectory)
+        return(times, sampledat)
 
     def saveFig(self,figpath, numsamples= 10):
         times, trajectory_box = self.simulation(numsamples)
@@ -68,8 +82,9 @@ class SDE_Markov:
         plt.savefig(figpath)
 
 
-    def sanity_check(self):#警報機みたいなもの
+    def sanity_check(self):#alarm
         pass
+
         '''
         if len(self.transform_matrix_step.shape)<2 or\
          len(self.noise_var_matrix.shape)<2:
@@ -82,7 +97,6 @@ class SDE_Markov:
             if mymatD2 !=  mymatD:
                 print("noise and transformation dimension mismatch!! ")
         '''
-#pdb.set_trace()　エラーの場所を探すコード
-#行列の設定方法
-#np.array([[],[],[]])
-#行列の掛け算 np.dot(,)
+#pdb.set_trace()　coad looking for error
+#np.array([[],[],[]]) matrix outline
+#np.dot(,) matrix times
