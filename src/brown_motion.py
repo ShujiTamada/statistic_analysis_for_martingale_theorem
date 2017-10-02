@@ -22,7 +22,6 @@ class brown_motion(sde.SDE_Markov):
         super(brown_motion, self).__init__(**keyargs)#becase of using for function,don't use self
 
         self.key=keyargs
-
         self.normal_mean= self.key['n_mean']#noize nomal mean
         self.normal_scale= self.key['n_scale']#noize nomal variance
         self.transform_matrix_step= self.key['mat']#transition matrix
@@ -35,11 +34,25 @@ class brown_motion(sde.SDE_Markov):
         times = np.asarray(times).reshape(1,len(times))
         return(trajectory_box,qv_box,times)
 
+    def function_select(self,function):
+        if function==brown_motion_normal:
+            function=self.brown_motion_normal()
+        if function==brown_motion_sq:
+            function=self.brown_motion_sq()
+        if function==brown_motion_Doob_mayer:
+            function=self.brown_motion_Doob_mayer()
+        else:
+           function=self.brown_motion_normal()
+
+
+
+
     def one_step(self,now_position):
         random_variable_T=np.random.normal(self.normal_mean,self.normal_scale,self.dimen).reshape(self.dimen,1)
         now_position_T=now_position.reshape(self.dimen,1)
-        new_position=now_position_T+np.dot(self.transform_matrix_step, now_position_T)*self.deltaT\
+        updatevalue =  np.dot(self.transform_matrix_step, now_position_T)*self.deltaT\
         +np.dot(self.noise_var_matrix, random_variable_T)*np.sqrt(self.deltaT)
+        new_position=now_position_T+ updatevalue
         now_position = new_position
         return(new_position)
 
@@ -55,11 +68,16 @@ class brown_motion(sde.SDE_Markov):
 
 
     def simulation(self, numsamples = 10):
+        print("Initiating the simulation sequence...")
         sampledat = []
         for k in range(numsamples):
-            times, trajectory_box,qv_box = self.brown_motion_nomal()
+            if np.mod(k, 100) == 0:
+                print('%s paths complete'%k)
+            times, trajectory_box,qv_box = self.brown_motion_normal()
             trajectory = trajectory_box[0]
             sampledat.append(trajectory)
+        sampledat = np.array(sampledat)
+        print("Simulations successfully completed!")
         return(times, sampledat)
 
 
@@ -74,7 +92,7 @@ class brown_motion(sde.SDE_Markov):
             myfig = plt.plot(times, k_th_trajectory, color='r')
         plt.savefig(figpath)
 
-    def brown_motion_nomal(self,**keyargs):
+    def brown_motion_normal(self,**keyargs):
         trajectory_box,qv_box,times=self.outcome_output()
         now_position = self.init
         trajectory_box[:,0]=now_position
