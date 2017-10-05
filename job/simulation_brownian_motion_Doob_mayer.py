@@ -18,15 +18,17 @@ import os
 def main():
 
     #SDE_Markov variation_number
-    term=1.#terminal_time
+    term=1#terminal_time
     step=0.001#step_size
     div=term/step#jump_number
-    init=np.array([0.])#init_value
+    init=np.array([2.])#init_value
 
     mean=0
     variance=1
 
-    repeat_time=100
+    repeat_time=3
+
+
     sdekey={}
     sdekey['default'] = False
     sdekey['init'] = init
@@ -40,8 +42,8 @@ def main():
     sdekey['function_select'] = "brown_motion_normal"
 
     figplace = '../figs'#move to fig file
-    figname= str('brownian_motion_normal.png')
-    arrayname= str('brownian_motion_normal.npy')
+    figname= str('brownian_motion_doob_mayar.png')
+    arrayname= str('brownian_motion_doob_mayar.npy')
     arraypath = os.path.join(figplace,arrayname)
     figpath = os.path.join(figplace,figname)
 
@@ -49,15 +51,8 @@ def main():
     mymodel = sde.SDE_Markov(**sdekey)
     mybmt=bmt(**sdekey)
 
-    '''
-    all_trajectory=np.zeros([repeat_time,div+1])
-    for k in range(repeat_time):
-        simulate.brown_motion_nomal()
-        times,trajectory_box,qv_box=simulate.brown_motion_nomal()
-        all_trajectory[k,:]=trajectory_box
-    print(all_trajectory)
-    '''
     times,trajectory_box=mybmt.simulation(repeat_time)
+
 
     mybmt.saveFigure(figpath,repeat_time)
     np.save(arraypath,trajectory_box)
@@ -70,6 +65,11 @@ def main():
 
 
     print('over %spaths, mean at time%s is %s. var is %s'%(numpath,term, meanval, varval))
+
+
+    #simulate.saveFig(brownian_motion_sq,repeat_time)
+    #np.save(brownian_motion_sq,trajectory)
+
 
 
 

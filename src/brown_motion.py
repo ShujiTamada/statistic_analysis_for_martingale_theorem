@@ -24,8 +24,9 @@ class brown_motion(sde.SDE_Markov):
         self.key=keyargs
         self.normal_mean= self.key['n_mean']#noize nomal mean
         self.normal_scale= self.key['n_scale']#noize nomal variance
-        self.transform_matrix_step= self.key['mat']#transition matrix
+        self.transform_matrix_step= self.key['matrix']#transition matrix
         self.noise_var_matrix= self.key['var_matrix']#noize matrix
+
 
     def outcome_output(self,**keyargs):
         trajectory_box=np.zeros((self.dimen,self.division+1))
@@ -34,12 +35,12 @@ class brown_motion(sde.SDE_Markov):
         times = np.asarray(times).reshape(1,len(times))
         return(trajectory_box,qv_box,times)
 
-    def function_select(self,function):
-        if function==brown_motion_normal:
+    def function_select(self):
+        if self.function_select==brown_motion_normal:
             function=self.brown_motion_normal()
-        if function==brown_motion_sq:
+        if self.function_select==brown_motion_sq:
             function=self.brown_motion_sq()
-        if function==brown_motion_Doob_mayer:
+        if self.function_select==brown_motion_Doob_mayer:
             function=self.brown_motion_Doob_mayer()
         else:
            function=self.brown_motion_normal()
@@ -73,7 +74,7 @@ class brown_motion(sde.SDE_Markov):
         for k in range(numsamples):
             if np.mod(k, 100) == 0:
                 print('%s paths complete'%k)
-            times, trajectory_box,qv_box = self.brown_motion_normal()
+            times, trajectory_box,qv_box = self.brown_motion_Doob_mayer()
             trajectory = trajectory_box[0]
             sampledat.append(trajectory)
         sampledat = np.array(sampledat)
