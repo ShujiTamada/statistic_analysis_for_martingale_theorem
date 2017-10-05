@@ -28,7 +28,9 @@ def main():
 
     repeat_time=100
 
-    observation='qv'
+    observation='qv'#select observation value
+    function='brown_motion_normal'#select observation function
+
 
 
     sdekey={}
@@ -43,7 +45,7 @@ def main():
     sdekey['n_scale'] = variance
 
     sdekey['observation'] = observation
-    sdekey['function_select'] = "brown_motion_normal"
+    sdekey['function_select'] = function
 
     figplace = '../figs'#move to fig file
     figname= str('brownian_motion_normal_qv.png')
@@ -55,14 +57,7 @@ def main():
     mymodel = sde.SDE_Markov(**sdekey)
     mybmt=bmt(**sdekey)
 
-    '''
-    all_trajectory=np.zeros([repeat_time,div+1])
-    for k in range(repeat_time):
-        simulate.brown_motion_nomal()
-        times,trajectory_box,qv_box=simulate.brown_motion_nomal()
-        all_trajectory[k,:]=trajectory_box
-    print(all_trajectory)
-    '''
+
     times,trajectory_box=mybmt.simulation(repeat_time)
 
     mybmt.saveFigure(figpath,repeat_time)

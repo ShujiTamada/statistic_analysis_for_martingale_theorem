@@ -28,6 +28,7 @@ class brown_motion(sde.SDE_Markov):
         self.noise_var_matrix= self.key['var_matrix']#noize matrix
 
         self.observation= self.key['observation']#noize matrix
+        self.function_select=self.key['function_select']
 
 
     def outcome_output(self,**keyargs):
@@ -37,16 +38,20 @@ class brown_motion(sde.SDE_Markov):
         times = np.asarray(times).reshape(1,len(times))
         return(trajectory_box,qv_box,times)
 
-    def function_select(self):
-        if self.function_select==brown_motion_normal:
-            function=self.brown_motion_normal()
-        if self.function_select==brown_motion_sq:
-            function=self.brown_motion_sq()
-        if self.function_select==brown_motion_Doob_mayer:
-            function=self.brown_motion_Doob_mayer()
+    def model_select(self,**keyargs):
+        if self.function_select=='brown_motion_normal':
+            times, trajectory_box,qv_box=self.brown_motion_normal()
+        elif self.function_select=='brown_motion_square':
+            times, trajectory_box,qv_box=self.brown_motion_square()
+        elif self.function_select=='brown_motion_Doob_mayer':
+            times, trajectory_box,qv_box=self.brown_motion_Doob_mayer()
         else:
-           function=self.brown_motion_normal()
-
+            print('manuke')
+        if self.observation=='qv':
+            observation=qv_box[0]
+        else:
+            observation=trajectory_box[0]
+        return(times,observation)
 
 
 
@@ -76,11 +81,7 @@ class brown_motion(sde.SDE_Markov):
         for k in range(numsamples):
             if np.mod(k, 100) == 0:
                 print('%s paths complete'%k)
-            times, trajectory_box,qv_box = self.brown_motion_normal()
-            if self.observation=='qv':
-                observation=qv_box[0]
-            else:
-                observation=trajectory_box[0]
+            times,observation=self.model_select()
             sampledat.append(observation)
         sampledat = np.array(sampledat)
         print("Simulations successfully completed!")

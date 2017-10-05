@@ -39,9 +39,9 @@ def main():
     sdekey['var_matrix'] = np.array([[1.]])
     sdekey['n_mean'] = mean
     sdekey['n_scale'] = variance
-    
+
     sdekey['observation'] = "trajectory"
-    sdekey['function_select'] = "brown_motion_normal"
+    sdekey['function_select'] = "brown_motion_square"
 
     figplace = '../figs'#move to fig file
     figname= str('brownian_motion_doob_mayar.png')
