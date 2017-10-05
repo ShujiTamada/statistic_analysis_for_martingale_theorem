@@ -26,7 +26,7 @@ def main():
     mean=0
     variance=1
 
-    repeat_time=1000
+    repeat_time=10
 
 
     sdekey={}
@@ -41,7 +41,7 @@ def main():
     sdekey['n_scale'] = variance
 
     sdekey['observation'] = "trajectory"
-    sdekey['function_select'] = "brown_motion_square"
+    sdekey['function_select'] = "brown_motion_Doob_mayer"
 
     figplace = '../figs'#move to fig file
     figname= str('brownian_motion_doob_mayar.png')
@@ -55,12 +55,11 @@ def main():
 
     #times,trajectory_box,qv=mybmt.brown_motion_square()
     #print(trajectory_box)
-
+    #times,trajectory_box,qv_box=mybmt.brown_motion_square()
+    #print(trajectory_box)
 
 
     times,trajectory_box=mybmt.simulation(repeat_time)
-
-
 
     mybmt.saveFigure(figpath,repeat_time)
     np.save(arraypath,trajectory_box)
@@ -70,9 +69,7 @@ def main():
     meanval =  np.mean(lastval)#mean of terminal value
     varval  = np.var(lastval)#var of terminal value
 
-
     print('over %spaths, mean at time%s is %s. var is %s'%(numpath,term, meanval, varval))
-
 
     #simulate.saveFig(brownian_motion_sq,repeat_time)
     #np.save(brownian_motion_sq,trajectory)

@@ -88,8 +88,6 @@ class brown_motion(sde.SDE_Markov):
         return(times, sampledat)
 
 
-
-
     def saveFigure(self,figpath,numsamples= 10):
         times, trajectory_box = self.simulation(numsamples)
         times=times[0]
@@ -114,7 +112,7 @@ class brown_motion(sde.SDE_Markov):
 
 
 
-    def brown_motion_square(self,**keyargs):
+    def brown_motion_square_2(self,**keyargs):
         trajectory_box,qv_box,times=self.outcome_output()
         now_position = self.init
         now_position_sq = self.init**2
@@ -129,6 +127,21 @@ class brown_motion(sde.SDE_Markov):
             now_position_sq = new_position_sq
         return(times,trajectory_box,qv_box)
 
+    def brown_motion_square(self,**keyargs):
+        trajectory_box,qv_box,times=self.outcome_output()
+        time,trajectory_BM,qv_box=self.brown_motion_normal()
+        now_position = trajectory_BM[:,0]
+        now_position_sq = now_position**2
+        trajectory_box[:,0]=now_position_sq
+        qv_box[:,0]=0
+        for k in range(self.division):
+            new_position = trajectory_BM[:,k]
+            new_position_sq = new_position**2
+            qv_box[:,k+1]=qv_box[:,k]+(new_position_sq-new_position_sq)**2
+            trajectory_box[:,k+1]=new_position_sq
+            now_position = new_position
+            now_position_sq = new_position_sq
+        return(times,trajectory_box,qv_box)
 
     def brown_motion_Doob_mayer(self,**keyargs):
         trajectory_box,qv_box,times=self.outcome_output()
