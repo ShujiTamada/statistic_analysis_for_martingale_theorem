@@ -26,7 +26,7 @@ def main():
     mean=0
     variance=1
 
-    repeat_time=10
+    repeat_time=100
     sdekey={}
     sdekey['default'] = False
     sdekey['init'] = init
@@ -57,13 +57,16 @@ def main():
     print(all_trajectory)
     '''
     times,trajectory_box=mybmt.simulation(repeat_time)
+
     mybmt.saveFigure(figpath,repeat_time)
     np.save(arraypath,trajectory_box)
 
     numpath,numstep = trajectory_box.shape
-    lastval= trajectory_box[:,numstep-1]
-    meanval =  np.mean(lastval)
-    varval  = np.var(lastval)
+    lastval= trajectory_box[:,numstep-1]#terminal value
+    meanval =  np.mean(lastval)#mean of terminal value
+    varval  = np.var(lastval)#var of terminal value
+
+
 
     print('over %spaths, mean at time%s is %s. var is %s'%(numpath,term, meanval, varval))
 
