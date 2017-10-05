@@ -27,6 +27,8 @@ class brown_motion(sde.SDE_Markov):
         self.transform_matrix_step= self.key['matrix']#transition matrix
         self.noise_var_matrix= self.key['var_matrix']#noize matrix
 
+        self.observation= self.key['observation']#noize matrix
+
 
     def outcome_output(self,**keyargs):
         trajectory_box=np.zeros((self.dimen,self.division+1))
@@ -74,9 +76,12 @@ class brown_motion(sde.SDE_Markov):
         for k in range(numsamples):
             if np.mod(k, 100) == 0:
                 print('%s paths complete'%k)
-            times, trajectory_box,qv_box = self.brown_motion_Doob_mayer()
-            trajectory = trajectory_box[0]
-            sampledat.append(trajectory)
+            times, trajectory_box,qv_box = self.brown_motion_normal()
+            if self.observation=='qv':
+                observation=qv_box[0]
+            else:
+                observation=trajectory_box[0]
+            sampledat.append(observation)
         sampledat = np.array(sampledat)
         print("Simulations successfully completed!")
         return(times, sampledat)
@@ -104,6 +109,7 @@ class brown_motion(sde.SDE_Markov):
             trajectory_box[:,k+1]=new_position
             now_position = new_position
         return(times,trajectory_box,qv_box)
+
 
 
 

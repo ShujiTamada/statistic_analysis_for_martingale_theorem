@@ -18,15 +18,15 @@ import os
 def main():
 
     #SDE_Markov variation_number
-    term=1#terminal_time
-    step=0.001#step_size
+    term=3#terminal_time
+    step=0.01#step_size
     div=term/step#jump_number
-    init=np.array([2.])#init_value
+    init=np.array([0.])#init_value
 
     mean=0
     variance=1
 
-    repeat_time=3
+    repeat_time=1000
 
 
     sdekey={}
@@ -39,6 +39,8 @@ def main():
     sdekey['var_matrix'] = np.array([[1.]])
     sdekey['n_mean'] = mean
     sdekey['n_scale'] = variance
+    
+    sdekey['observation'] = "trajectory"
     sdekey['function_select'] = "brown_motion_normal"
 
     figplace = '../figs'#move to fig file
@@ -51,7 +53,13 @@ def main():
     mymodel = sde.SDE_Markov(**sdekey)
     mybmt=bmt(**sdekey)
 
+    #times,trajectory_box,qv=mybmt.brown_motion_square()
+    #print(trajectory_box)
+
+
+
     times,trajectory_box=mybmt.simulation(repeat_time)
+
 
 
     mybmt.saveFigure(figpath,repeat_time)
@@ -61,7 +69,6 @@ def main():
     lastval= trajectory_box[:,numstep-1]#terminal value
     meanval =  np.mean(lastval)#mean of terminal value
     varval  = np.var(lastval)#var of terminal value
-
 
 
     print('over %spaths, mean at time%s is %s. var is %s'%(numpath,term, meanval, varval))

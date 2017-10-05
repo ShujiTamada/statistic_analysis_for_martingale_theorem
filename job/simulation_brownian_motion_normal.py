@@ -18,7 +18,7 @@ import os
 def main():
 
     #SDE_Markov variation_number
-    term=1.#terminal_time
+    term=2.#terminal_time
     step=0.001#step_size
     div=term/step#jump_number
     init=np.array([0.])#init_value
@@ -27,6 +27,10 @@ def main():
     variance=1
 
     repeat_time=100
+
+    observation='qv'
+
+
     sdekey={}
     sdekey['default'] = False
     sdekey['init'] = init
@@ -37,11 +41,13 @@ def main():
     sdekey['var_matrix'] = np.array([[1.]])
     sdekey['n_mean'] = mean
     sdekey['n_scale'] = variance
+
+    sdekey['observation'] = observation
     sdekey['function_select'] = "brown_motion_normal"
 
     figplace = '../figs'#move to fig file
-    figname= str('brownian_motion_normal.png')
-    arrayname= str('brownian_motion_normal.npy')
+    figname= str('brownian_motion_normal_qv.png')
+    arrayname= str('brownian_motion_normal_qv.npy')
     arraypath = os.path.join(figplace,arrayname)
     figpath = os.path.join(figplace,figname)
 
