@@ -53,9 +53,10 @@ class random_walk:
           placenow=self.init
           path[0]=trajectory_box[0]- qv_box[0]
           for k in range(self.terminal):
-              placenow=self.one_step(placenow)
+              random_variable=np.random.binomial(1,self.prob,1)*2*self.jump_size -self.jump_size
+              placenow=placenow+random_variable
               trajectory_box[k+1] = placenow**2
-              qv_box[k+1]=qv_box[k]+placenow**2 #this value is standard random_walk qv
+              qv_box[k+1]=qv_box[k]+random_variable**2 #this value is standard random_walk qv
               path[k+1]=trajectory_box[k+1]-qv_box[k+1]
           return(path,qv_box)
 
@@ -64,11 +65,15 @@ class random_walk:
           times=np.arange(0,self.terminal+1,1)
           times = np.asarray(times).reshape(1,len(times))
           sample_box=np.zeros([self.repeat_time,self.terminal+1])
+          summation=0
           for k in range(self.repeat_time):
               if np.mod(k, 100) == 0:
                   print('%s paths complete'%k)
               trajectory,qv=self.model_selection()
               sample_box[k]=trajectory
+              summation=summation+trajectory[self.terminal]
+          ave=summation/self.repeat_time
+          print(ave)
           return(times, sample_box)
 
       def plot_glaph(self,figpath,**keyargs):

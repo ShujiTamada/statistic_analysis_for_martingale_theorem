@@ -22,7 +22,7 @@ def main():
     init=np.array([0.])#init_value
     jump_size=1
     prob=0.5
-    repeat_time=10000
+    repeat_time=20000
 
     sdekey={}
     sdekey['init'] = init
