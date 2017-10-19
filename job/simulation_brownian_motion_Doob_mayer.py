@@ -18,15 +18,15 @@ import os
 def main():
 
     #SDE_Markov variation_number
-    term=3#terminal_time
-    step=0.01#step_size
+    term=1#terminal_time
+    step=0.0005#step_size
     div=term/step#jump_number
     init=np.array([0.])#init_value
 
     mean=0
     variance=1
 
-    repeat_time=10
+    repeat_time=1000
 
 
     sdekey={}
@@ -40,12 +40,12 @@ def main():
     sdekey['n_mean'] = mean
     sdekey['n_scale'] = variance
 
-    sdekey['observation'] = "trajectory"
+    sdekey['observation'] = "qv"
     sdekey['function_select'] = "brown_motion_Doob_mayer"
 
     figplace = '../figs'#move to fig file
-    figname= str('brownian_motion_doob_mayar.png')
-    arrayname= str('brownian_motion_doob_mayar.npy')
+    figname= str('brownian_motion_doob_mayar_%s.png'%sdekey['observation'])
+    arrayname= str('brownian_motion_doob_mayar_%s.npy'%sdekey['observation'])
     arraypath = os.path.join(figplace,arrayname)
     figpath = os.path.join(figplace,figname)
 
@@ -61,8 +61,10 @@ def main():
 
     times,trajectory_box=mybmt.simulation(repeat_time)
 
-    mybmt.saveFigure(figpath,repeat_time)
+    #mybmt.saveFigure(figpath,repeat_time)
     np.save(arraypath,trajectory_box)
+    mybmt.saveResult(figpath, times, trajectory_box)
+
 
     numpath,numstep = trajectory_box.shape
     lastval= trajectory_box[:,numstep-1]#terminal value

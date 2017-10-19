@@ -11,7 +11,7 @@ koyamaSAN = None
 mymat:trancefform matrix
 mymat_noise:noise term trancefform atrix
 myvar:noise matrix
-myterm:終点時間
+myterm:terminal
 mydiv:
 mymean:noise Guiss mean
 myscale:noise Guiss var
