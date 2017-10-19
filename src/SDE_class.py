@@ -5,7 +5,7 @@ import numpy as np#Pakkege must be put outside class
 import pdb
 from matplotlib import pyplot as plt
 import pdb
-koyamaSAN = None
+
 
 '''
 mymat:trancefform matrix
@@ -74,8 +74,6 @@ class SDE_Markov:
 
     def saveFig(self,figpath, numsamples= 10):
         times, trajectory_box = self.simulation(numsamples)
-
-
         for k in range(len(trajectory_box)):
             k_th_trajectory = trajectory_box[k]
             myfig = plt.plot(times, k_th_trajectory, color='r')
