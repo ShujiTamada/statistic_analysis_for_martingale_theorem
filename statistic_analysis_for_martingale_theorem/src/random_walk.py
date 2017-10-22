@@ -27,6 +27,8 @@ class random_walk:
              trajectory_box,qv_box=self.random_walk_standard()
           elif self.model=='sq_qv':
              trajectory_box,qv_box=self.rdw_sq_qv()
+          elif self.model=='integral_discrete':
+             trajectory_box,qv_box=self.integral_discrete()
           else:
              print('manuke')
           return(trajectory_box,qv_box)
@@ -60,6 +62,31 @@ class random_walk:
               path[k+1]=trajectory_box[k+1]-qv_box[k+1]
           return(path,qv_box)
 
+      def integral_discrete(self,**keyargs):
+          trajectory_box = np.zeros(self.terminal+1)
+          placenow=self.init
+          trajectory_box[0]=placenow
+          for k in range(self.terminal):
+              random_variable=np.random.binomial(1,self.prob,1)*2*self.jump_size -self.jump_size
+              update=np.log(np.abs(random_variable))
+              print(update)
+              placenow=placenow+update
+              trajectory_box[k+1]=placenow
+              path=1
+          return(trajectory_box,path)
+
+      def rw_multi_dim(self,**keyargs):
+          trajectory_box = np.zeros([self.dimen,self.terminal+1])
+          placenow=self.init
+          sb=placenow.shape
+          trajectory_box[0:0+sb[0],0:0+sb[1]]=placenow
+          for k in range(self.terminal):
+              rv=np.random.randn(self.dimen,1)
+              print(rv)
+              placenow=placenow+rv
+              trajectory_box[0:0+sb[0],k+1:k+1+sb[1]]=placenow
+              path=1
+          return(trajectory_box,path)
 
       def simulation(self,**keyargs):
           times=np.arange(0,self.terminal+1,1)
@@ -76,6 +103,19 @@ class random_walk:
           print(ave)
           return(times, sample_box)
 
+      def simulation_multi_dim(self,**keyargs):
+          times=np.arange(0,self.terminal+1,1)
+          times = np.asarray(times).reshape(1,len(times))
+          sample_box=np.zeros([self.repeat_time*2,self.terminal+1])
+          summation=0
+          for k in range(self.repeat_time):
+              if np.mod(k, 1) == 0:
+                  print('%s paths complete'%k)
+              trajectory,qv=self.rw_multi_dim()
+              sb=trajectory.shape
+              sample_box[k:k+sb[0],0:0+sb[1]]=trajectory
+          return(times, sample_box)
+
       def plot_glaph(self,figpath,**keyargs):
           times, sample_box=self.simulation()
           times=times[0]
@@ -83,3 +123,6 @@ class random_walk:
               k_th_trajectory=sample_box[k]
               plt.plot(times, k_th_trajectory)
           plt.savefig(figpath)
+
+
+#pdb.set_trace()
