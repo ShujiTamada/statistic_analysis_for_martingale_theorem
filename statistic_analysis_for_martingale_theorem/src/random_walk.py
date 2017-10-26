@@ -17,6 +17,7 @@ class random_walk:
           self.repeat_time=self.key['repeat_time']
           self.model=self.key['model']
 
+
       def one_step(self,placenow,**keyargs):
           random_variable=np.random.binomial(1,self.prob,1)*2*self.jump_size -self.jump_size
           placenow = placenow + random_variable
@@ -27,8 +28,6 @@ class random_walk:
              trajectory_box,qv_box=self.random_walk_standard()
           elif self.model=='sq_qv':
              trajectory_box,qv_box=self.rdw_sq_qv()
-          elif self.model=='integral_discrete':
-             trajectory_box,qv_box=self.integral_discrete()
           else:
              print('manuke')
           return(trajectory_box,qv_box)
@@ -62,18 +61,7 @@ class random_walk:
               path[k+1]=trajectory_box[k+1]-qv_box[k+1]
           return(path,qv_box)
 
-      def integral_discrete(self,**keyargs):
-          trajectory_box = np.zeros(self.terminal+1)
-          placenow=self.init
-          trajectory_box[0]=placenow
-          for k in range(self.terminal):
-              random_variable=np.random.binomial(1,self.prob,1)*2*self.jump_size -self.jump_size
-              update=np.log(np.abs(random_variable))
-              print(update)
-              placenow=placenow+update
-              trajectory_box[k+1]=placenow
-              path=1
-          return(trajectory_box,path)
+
 
       def rw_multi_dim(self,**keyargs):
           trajectory_box = np.zeros([self.dimen,self.terminal+1])
@@ -93,15 +81,16 @@ class random_walk:
           times = np.asarray(times).reshape(1,len(times))
           sample_box=np.zeros([self.repeat_time,self.terminal+1])
           summation=0
+          terminal_box=np.zeros(self.repeat_time)
           for k in range(self.repeat_time):
               if np.mod(k, 100) == 0:
                   print('%s paths complete'%k)
               trajectory,qv=self.model_selection()
               sample_box[k]=trajectory
-              summation=summation+trajectory[self.terminal]
-          ave=summation/self.repeat_time
-          print(ave)
-          return(times, sample_box)
+              terminal_box[k]=trajectory[self.terminal]
+          average=np.average(terminal_box)
+          print(average)
+          return(times, sample_box,terminal_box)
 
       def simulation_multi_dim(self,**keyargs):
           times=np.arange(0,self.terminal+1,1)
@@ -117,12 +106,20 @@ class random_walk:
           return(times, sample_box)
 
       def plot_glaph(self,figpath,**keyargs):
-          times, sample_box=self.simulation()
+          times, sample_box,terminal=self.simulation()
           times=times[0]
           for k in range(self.repeat_time):
               k_th_trajectory=sample_box[k]
               plt.plot(times, k_th_trajectory)
           plt.savefig(figpath)
+          #if self.hist==True:
+             #plt.hist(terminal,50)
+             #plt.savefig(fighist)
+
+      def plot_hist(self,fighist,**keyargs):
+          times, sample_box,terminal=self.simulation()
+          plt.hist(terminal,20)
+          plt.savefig(fighist)
 
 
 #pdb.set_trace()

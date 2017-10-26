@@ -18,11 +18,11 @@ import pdb
 import os
 
 def main():
-    term=10#terminal_time
+    term=100#terminal_time
     init=np.array([0.])#init_value
-    jump_size=2
+    jump_size=1
     prob=0.5
-    repeat_time=20
+    repeat_time=10000
 
     sdekey={}
     sdekey['init'] = init
@@ -30,16 +30,18 @@ def main():
     sdekey['jump_size'] = jump_size
     sdekey['prob'] = prob
     sdekey['repeat_time'] = repeat_time
-    sdekey['model']='integral_discrete'
+    sdekey['model']='sq_qv'
 
     figplace = '../fig/thm5.1.1'#move to fig file
-    figname= str('random_walk_%s.png'%sdekey['model'])
-    figpath= os.path.join(figplace,figname)
-
+    pathname= str('random_walk_path_%s.png'%sdekey['model'])
+    histname= str('random_walk_hist_%s.png'%sdekey['model'])
+    fighist= os.path.join(figplace,histname)
+    figpath= os.path.join(figplace,pathname)
 
 
     rd_walk = rd.random_walk(**sdekey)
-    path=rd_walk.plot_glaph(figpath)
+    #rd_walk.plot_glaph(figpath)
+    rd_walk.plot_hist(fighist)
 
     #trajectory=rd_walk.integral_discrete()
     #print(trajectory)

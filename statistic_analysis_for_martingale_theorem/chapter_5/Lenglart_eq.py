@@ -1,10 +1,11 @@
-#make a random walk
+# Lenglant_eq
+
 import numpy as np
 import sys
 sys.path.append("../src")#road a file
 
 import random_walk as rd
-from random_walk import random_walk as rdw
+import Lenglart as lg #load a file
 import importlib #function to reroad a file
 
 from matplotlib import pyplot as plt
@@ -16,11 +17,13 @@ import pdb
 import os
 
 def main():
-    term=200#terminal_time
+    term=100#terminal_time
     init=np.array([0.])#init_value
     jump_size=1
     prob=0.5
     repeat_time=10000
+    delta=200
+    nu=3
 
     sdekey={}
     sdekey['init'] = init
@@ -29,22 +32,13 @@ def main():
     sdekey['prob'] = prob
     sdekey['repeat_time'] = repeat_time
     sdekey['model']='sq_qv'
-
-    figplace = '../fig/verfication'#move to fig file
-    pathname= str('random_walk_path_%s.png'%sdekey['model'])
-    histname= str('random_walk_hist_%s.png'%sdekey['model'])
-    fighist= os.path.join(figplace,histname)
-    figpath= os.path.join(figplace,pathname)
+    sdekey['delta']=delta
+    sdekey['nu']=nu
 
 
-
-
-    rd_walk = rd.random_walk(**sdekey)
-    #rd_walk.plot_glaph(figpath)
-
-    rd_walk.plot_hist(fighist)
-
-    #rd_walk.random_walk_dim()
+    lgeq_eq= lg.Lenglart(**sdekey)#load a class
+    left_term,right_term=lgeq_eq.Lenglart_eq()#load a function
+    print(left_term,right_term)
 
 
 
