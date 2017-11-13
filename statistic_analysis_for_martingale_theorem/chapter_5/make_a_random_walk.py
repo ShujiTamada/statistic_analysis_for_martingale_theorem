@@ -16,11 +16,11 @@ import pdb
 import os
 
 def main():
-    term=200#terminal_time
+    term=1#terminal_time
     init=np.array([0.])#init_value
     jump_size=1
     prob=0.5
-    repeat_time=10000
+    repeat_time=1
 
     sdekey={}
     sdekey['init'] = init
@@ -45,7 +45,7 @@ def main():
     rd_walk.plot_hist(fighist)
 
     #rd_walk.random_walk_dim()
-
+    os.system('say "うんこぉぉぉぉぉぉぉぉぉぉぉ"')
 
 
 

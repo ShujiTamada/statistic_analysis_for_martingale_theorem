@@ -21,9 +21,9 @@ def main():
     init=np.array([0.])#init_value
     jump_size=1
     prob=0.5
-    repeat_time=10000
-    delta=200
-    nu=3
+    repeat_time=1
+    delta=2
+    nu=2
 
     sdekey={}
     sdekey['init'] = init
@@ -37,8 +37,9 @@ def main():
 
 
     lgeq_eq= lg.Lenglart(**sdekey)#load a class
-    left_term,right_term=lgeq_eq.Lenglart_eq()#load a function
-    print(left_term,right_term)
+    for k in range (1):
+        left_term,right_term=lgeq_eq.Lenglart_eq()#load a function
+        print(left_term,right_term)
 
 
 

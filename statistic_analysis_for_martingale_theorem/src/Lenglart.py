@@ -25,15 +25,22 @@ class Lenglart(rd.random_walk):
         count_1=0
         count_2=0
         for k in range(self.repeat_time):
+            count=0
             now_place=self.init
             increase_process=self.init
             trajectory_box = np.zeros(self.terminal+1)
             trajectory_box[0]=now_place
+            switch=True
             for i in range(self.terminal):
-                random_variable=np.random.binomial(1,self.prob,1)*2*self.jump_size -self.jump_size
-                now_place=now_place+random_variable
-                trajectory_box[i+1]=now_place
-                increase_process=increase_process+np.abs(random_variable)
+                #random_variable=np.random.binomial(1,self.prob,1)*2*self.jump_size -self.jump_size
+                if switch==True:
+                    random_variable=np.random.normal(0,10)
+                    now_place=now_place+random_variable
+                    trajectory_box[i+1]=now_place
+                    increase_process=increase_process+np.abs(random_variable)
+                    count=count+1
+                if now_place>self.nu:#stopping time condition
+                    switch=False
             X_max=np.max(trajectory_box)
             if X_max>self.nu:
                 count_1=count_1+1

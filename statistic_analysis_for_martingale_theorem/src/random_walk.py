@@ -112,9 +112,7 @@ class random_walk:
               k_th_trajectory=sample_box[k]
               plt.plot(times, k_th_trajectory)
           plt.savefig(figpath)
-          #if self.hist==True:
-             #plt.hist(terminal,50)
-             #plt.savefig(fighist)
+
 
       def plot_hist(self,fighist,**keyargs):
           times, sample_box,terminal=self.simulation()
