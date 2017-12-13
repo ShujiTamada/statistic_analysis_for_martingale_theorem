@@ -48,4 +48,4 @@ class Lenglart(rd.random_walk):
                 count_2=count_2+1
         prob_left=count_1/self.repeat_time
         prob_right=self.delta/self.nu+count_2/self.repeat_time
-        return(prob_left,prob_right)
+        return(prob_left,prob_right) #prob_left is left term of equation. prob_right is right term of equation.

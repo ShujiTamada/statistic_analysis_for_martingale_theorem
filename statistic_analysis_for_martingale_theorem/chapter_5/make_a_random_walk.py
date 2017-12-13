@@ -15,6 +15,8 @@ import argparse
 import pdb
 import os
 
+
+
 def main():
     term=1#terminal_time
     init=np.array([0.])#init_value
@@ -40,16 +42,17 @@ def main():
 
 
     rd_walk = rd.random_walk(**sdekey)
-    #rd_walk.plot_glaph(figpath)
-
+    rd_walk.plot_glaph(figpath)
     rd_walk.plot_hist(fighist)
 
     #rd_walk.random_walk_dim()
-    os.system('say "うんこぉぉぉぉぉぉぉぉぉぉぉ"')
+    #os.system('say "うんこぉぉぉぉぉぉぉぉぉぉぉ"')
 
 
 
 if __name__ == '__main__':
-
+    parser = argparse.ArgumentParaser(description='runnning parameters')
+    parser.add_argument('--repeat_time', '-n', type=int, default =1,  help='number of trajectories')
+    args= parser.parse_args()
 #pdb.set_trace()
-    main()
+    main(args)
