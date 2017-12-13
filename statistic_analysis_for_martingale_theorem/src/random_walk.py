@@ -16,8 +16,9 @@ class random_walk:
           self.prob=self.key['prob']#translate probability
           self.repeat_time=self.key['repeat_time']#number of path
           self.model=self.key['model']
+          self.value=self.key['value']
       '''
-      this function is noize term.
+      this function runs noize term.
       Noize distribution is binomial
       '''
 
@@ -42,17 +43,18 @@ class random_walk:
 
       '''
       def model_selection(self,**keyargs):
-          if self.model=='standard':#standard random walk
-             trajectory_box,qv_box=self.random_walk_standard()
-          elif self.model=='square_minus_qv':
-             trajectory_box,qv_box=self.random_walk_square_minus_qv()
+          if self.model=='standard' and self.value =='path':#standard random walk
+             path,qv_box=self.random_walk_standard()
+             model_value=path
+          #elif self.model=='square_minus_qv':
+             #trajectory_box,qv_box=self.random_walk_square_minus_qv()
           else:
              print('manuke')
              raise NotImplementedError
-          return(trajectory_box,qv_box)
+          return(model_value)
 
       '''
-      This function is standrd random walk.
+      This function runs standrd random walk.
       '''
       def random_walk_standard(self,**keyargs):
           placenow=self.init
@@ -66,7 +68,7 @@ class random_walk:
               qv_box[k+1]=qv_box[k]+placenow**2#record quadratic valuation
           return(standrd_random_walk,qv_box)
       '''
-      This function is square random walk minus standard random walk quadratic valuation
+      This function runs square random walk minus standard random walk quadratic valuation
       For using this functiion, it is to find that
            square random walk minus standard random walk quadratic valuation is martingale.
       '''
@@ -87,42 +89,44 @@ class random_walk:
           return(square_minus_qv,qv_box_standard)
 
 
-      def rw_multi_dim(self,**keyargs):
-          trajectory_box = np.zeros([self.dimen,self.terminal+1])
+      '''
+      this function runs multi dimension random walk
+      remark glaph is left of
+      '''
+
+      def random_walk_multi_dim(self,**keyargs):
+          multi_dim_random_walk = np.zeros([self.dimen,self.terminal+1])
           placenow=self.init
           sb=placenow.shape
-          trajectory_box[0:0+sb[0],0:0+sb[1]]=placenow
+          multi_dim_random_walk[0:0+sb[0],0:0+sb[1]]=placenow
           for k in range(self.terminal):
-              rv=np.random.randn(self.dimen,1)
-              print(rv)
-              placenow=placenow+rv
-              trajectory_box[0:0+sb[0],k+1:k+1+sb[1]]=placenow
-              square_minus_qv=1
-          return(trajectory_box,path)
+              random_variable=np.random.randn(self.dimen,1)
+              placenow=placenow+random_variable
+              multi_dim_random_walk[0:0+sb[0],k+1:k+1+sb[1]]=placenow
+              path=1
+          return(multi_dim_random_walk,path)
 
       '''
       This method runs the simulation of the designated mode.
-      Inputs;
+      Inputs:
       Output:
       '''
       def simulation(self,**keyargs):
-          times=np.arange(0,self.terminal+1,1)
-          times = np.asarray(times).reshape(1,len(times))
-          sample_box=np.zeros([self.repeat_time,self.terminal+1])
-          summation=0
-          count=0
-          terminal_box=np.zeros(self.repeat_time)
-          for k in range(self.repeat_time):
+          times=np.arange(0,self.terminal+1,1)#box for time
+          times = np.asarray(times).reshape(1,len(times))#making time array
+          model_path=np.zeros([self.repeat_time,self.terminal+1])#box for recording all path value
+          terminal_value=np.zeros(self.repeat_time)#box for recording all path terminal value
+          for k in range(self.repeat_time):#record all path value in model_path
               if np.mod(k, 100) == 0:
                   print('%s paths complete'%k)
-              trajectory,qv=self.model_selection()
-              sample_box[k]=trajectory
-              terminal_box[k]=trajectory[self.terminal]
-          average=np.average(terminal_box)
-          variance = np.var(terminal_box)
-          print('average terminal value is%s'%average)#average of terminal value
-          print('variance of the terminal value is%s'%variance)#variance of terminal value
-          return(times, sample_box,terminal_box)
+              model_value=self.model_selection()
+              model_path[k]=model_value
+              terminal_value[k]=model_value[self.terminal]
+          average=np.average(terminal_value) #average terminal value
+          variance = np.var(terminal_value) #variance terminal value
+          print('average terminal value is%s'%average)
+          print('variance of the terminal value is%s'%variance)
+          return(times, model_path,terminal_value)
 
       def simulation_multi_dim(self,**keyargs):
           times=np.arange(0,self.terminal+1,1)
@@ -148,23 +152,6 @@ class random_walk:
           plt.hist(terminal,40)
           plt.savefig(fighist)
 
-      def plot_glaph_2(self,figpath,filepath, fighist,**keyargs):
-          times, sample_box,terminal=self.simulation()
-          times=times[0]
-          for k in range(self.repeat_time):
-              k_th_trajectory=sample_box[k]
-              plt.plot(times, k_th_trajectory)
-          plt.savefig(figpath)
-          plt.close()
-          np.save(filepath, sample_box)
-          plt.hist(terminal,40)
-          plt.savefig(fighist)
-
-
-      def plot_hist(self,fighist,**keyargs):
-          times, sample_box,terminal=self.simulation()
-          plt.hist(terminal,20)
-          plt.savefig(fighist)
 
 
 #pdb.set_trace()
