@@ -18,7 +18,7 @@ class random_walk:
           self.model=self.key['model']
       '''
       this function is noize term.
-      Noize distribution is binomial  
+      Noize distribution is binomial
       '''
 
       def generateDelta_binom(self,jumpsize):
@@ -42,10 +42,10 @@ class random_walk:
 
       '''
       def model_selection(self,**keyargs):
-          if self.model=='standard':
+          if self.model=='standard':#standard random walk
              trajectory_box,qv_box=self.random_walk_standard()
-          elif self.model=='sq_qv':
-             trajectory_box,qv_box=self.rdw_sq_qv()
+          elif self.model=='square_minus_qv':
+             trajectory_box,qv_box=self.random_walk_square_minus_qv()
           else:
              print('manuke')
              raise NotImplementedError
@@ -55,34 +55,36 @@ class random_walk:
       This function is standrd random walk.
       '''
       def random_walk_standard(self,**keyargs):
-          trajectory_box = np.zeros(self.terminal+1)
-          qv_box = np.zeros(self.terminal+1)
-          trajectory_box[0] = self.init
-          qv_box[0] = self.init**2
           placenow=self.init
+          standrd_random_walk = np.zeros(self.terminal+1)#box for recording path value
+          qv_box = np.zeros(self.terminal+1)#box for recording quadratic valuation
+          standrd_random_walk[0] = placenow#record init value
+          qv_box[0] = placenow**2#record init quadratic valuation
           for k in range(self.terminal):
               placenow=self.one_step(placenow)
-              trajectory_box[k+1] = placenow
-              qv_box[k+1]=qv_box[k]+placenow**2
-          return(trajectory_box,qv_box)
+              standrd_random_walk[k+1] = placenow #record path value
+              qv_box[k+1]=qv_box[k]+placenow**2#record quadratic valuation
+          return(standrd_random_walk,qv_box)
       '''
-      This function is quadratic variation
+      This function is square random walk minus standard random walk quadratic valuation
+      For using this functiion, it is to find that
+           square random walk minus standard random walk quadratic valuation is martingale.
       '''
-      def rdw_sq_qv(self,**keyargs):
-          trajectory_box = np.zeros(self.terminal+1)
-          qv_box = np.zeros(self.terminal+1)
-          path = np.zeros(self.terminal+1)
-          trajectory_box[0] = self.init**2
-          qv_box[0] = self.init**2
+      def random_walk_square_minus_qv(self,**keyargs):
           placenow=self.init
-          path[0]=trajectory_box[0]- qv_box[0]
+          square_random_walk = np.zeros(self.terminal+1)#box for recording square random walk path value
+          qv_box_standard = np.zeros(self.terminal+1)#box for recording quadratic valuation of standard random valuation
+          square_minus_qv = np.zeros(self.terminal+1)#box for recording square minus quadratic valuation path value
+          square_random_walk[0] = placenow**2
+          qv_box_standard[0] = placenow**2
+          square_minus_qv[0]=square_random_walk[0]- qv_box_standard[0]
           for k in range(self.terminal):
               random_variable = self.generateDelta_binom(self.jump_size)
               placenow=placenow+random_variable
-              trajectory_box[k+1] = placenow**2
-              qv_box[k+1]=qv_box[k]+random_variable**2 #this value is standard random_walk qv
-              path[k+1]=trajectory_box[k+1]-qv_box[k+1]
-          return(path,qv_box)
+              square_random_walk[k+1] = placenow**2 #record square random walk path value
+              qv_box_standard[k+1]=qv_box_standard[k]+random_variable**2 #record quadratic valuation of standard random valuation
+              square_minus_qv[k+1]=square_random_walk[k+1]-qv_box_standard[k+1]#record square minus quadratic valuation path value
+          return(square_minus_qv,qv_box_standard)
 
 
       def rw_multi_dim(self,**keyargs):
@@ -95,7 +97,7 @@ class random_walk:
               print(rv)
               placenow=placenow+rv
               trajectory_box[0:0+sb[0],k+1:k+1+sb[1]]=placenow
-              path=1
+              square_minus_qv=1
           return(trajectory_box,path)
 
       '''
