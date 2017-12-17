@@ -15,8 +15,8 @@ class random_walk:
           self.init= self.key['init'].reshape(self.dimen, 1)#初期値(ベクトル)
           self.prob=self.key['prob']#translate probability
           self.repeat_time=self.key['repeat_time']#number of path
-          self.model=self.key['model']
-          self.value=self.key['value']
+          self.model=self.key['model']#selection path model
+          self.value=self.key['value']#selection path value(for example quadratic valuation, path and so on.)
       '''
       this function runs noize term.
       Noize distribution is binomial
@@ -43,11 +43,22 @@ class random_walk:
 
       '''
       def model_selection(self,**keyargs):
-          if self.model=='standard' and self.value =='path':#standard random walk
-             path,qv_box=self.random_walk_standard()
+          if self.model=='standard' and self.value =='path':
+              #select path of standard random walk
+             path,qv=self.random_walk_standard()
              model_value=path
-          #elif self.model=='square_minus_qv':
-             #trajectory_box,qv_box=self.random_walk_square_minus_qv()
+          elif self.model=='standard' and self.value =='qv':
+              #select qv of standard random walk
+             path,qv=self.random_walk_standard()
+             model_value=qv
+          elif self.model=='square_minus_qv' and self.value =='path':
+              #select path of square_minus_qv
+             path,qv=self.random_walk_square_minus_qv()
+             model_value=path
+          elif self.model=='square_minus_qv' and self.value =='square_random_walk':
+              #select path of square_random_walk
+             path,square_random_walk=self.random_walk_square_minus_qv()
+             model_value=square_random_walk
           else:
              print('manuke')
              raise NotImplementedError
@@ -59,14 +70,16 @@ class random_walk:
       def random_walk_standard(self,**keyargs):
           placenow=self.init
           standrd_random_walk = np.zeros(self.terminal+1)#box for recording path value
-          qv_box = np.zeros(self.terminal+1)#box for recording quadratic valuation
+          qv = np.zeros(self.terminal+1)#box for recording quadratic valuation
           standrd_random_walk[0] = placenow#record init value
-          qv_box[0] = placenow**2#record init quadratic valuation
+          qv[0] = placenow**2#record init quadratic valuation
+          oldplace=placenow
           for k in range(self.terminal):
               placenow=self.one_step(placenow)
               standrd_random_walk[k+1] = placenow #record path value
-              qv_box[k+1]=qv_box[k]+placenow**2#record quadratic valuation
-          return(standrd_random_walk,qv_box)
+              qv[k+1]=qv[k]+(placenow-oldplace)**2#record quadratic valuation
+              oldplace=placenow
+          return(standrd_random_walk,qv)
       '''
       This function runs square random walk minus standard random walk quadratic valuation
       For using this functiion, it is to find that
@@ -86,7 +99,7 @@ class random_walk:
               square_random_walk[k+1] = placenow**2 #record square random walk path value
               qv_box_standard[k+1]=qv_box_standard[k]+random_variable**2 #record quadratic valuation of standard random valuation
               square_minus_qv[k+1]=square_random_walk[k+1]-qv_box_standard[k+1]#record square minus quadratic valuation path value
-          return(square_minus_qv,qv_box_standard)
+          return(square_minus_qv,square_random_walk)
 
 
       '''
@@ -146,10 +159,10 @@ class random_walk:
           times=times[0]
           for k in range(self.repeat_time):
               k_th_trajectory=sample_box[k]
-              plt.plot(times, k_th_trajectory)
+              plt.plot(times, k_th_trajectory)#making a glaph
           plt.savefig(figpath)
-          plt.close()
-          plt.hist(terminal,40)
+          plt.close()#this command separate glaph and histglam
+          plt.hist(terminal,40)#making a histglam
           plt.savefig(fighist)
 
 
