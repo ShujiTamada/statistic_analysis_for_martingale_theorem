@@ -19,18 +19,17 @@ def main():
 
     #SDE_Markov variation_number
     term=1.#terminal_time
-    step=0.0005#step_size
+    step=0.25#step_size
     div=term/step#jump_number
-    init=np.array([0.])#init_value
-    #init=np.zeros((2,1))#init_value
+    init=np.zeros((2,1))#init_value
 
-    mean=0
-    variance=1
+    mean=np.zeros((2,2))
+    variance=np.identity((2,2))
 
     repeat_time=1000
 
-    observation='qv'#select observation value
-    function='brown_motion_normal'#select observation function
+    function='standrd'#select observation function
+    observation='path'#select observation value
 
 
     sdekey={}
@@ -39,11 +38,8 @@ def main():
     sdekey['stepsize'] = step
     sdekey['term'] = term
 
-    sdekey['matrix'] = np.array([[0.]])
-    #sdekey['matrix'] = np.zeros((2,2))
-
-    sdekey['var_matrix'] = np.array([[1.]])
-    #sdekey['var_matrix'] = np.identity(2)
+    sdekey['matrix'] = np.zeros((2,2))
+    sdekey['var_matrix'] = np.identity(2)
 
     sdekey['n_mean'] = mean
     sdekey['n_scale'] = variance
@@ -52,8 +48,8 @@ def main():
     sdekey['function_select'] = function
 
     figplace = '../figs'#move to fig file
-    figname= str('BM_dim1.png')
-    arrayname= str('BM_dim1.npy')
+    figname= str('multi_dim.png')
+    arrayname= str('multi_dim.npy')
     arraypath = os.path.join(figplace,arrayname)
     figpath = os.path.join(figplace,figname)
 
@@ -61,13 +57,11 @@ def main():
     mymodel = sde.SDE_Markov(**sdekey)
     mybmt=bmt(**sdekey)
 
-    #trajectory_box,qv,times=mybmt.outcome_output()
 
-    #print(trajectory_box.shape)
     times,trajectory_box=mybmt.simulation(repeat_time)
 
     np.save(arraypath,trajectory_box)
-    mybmt.saveResult(figpath, times, trajectory_box)
+    #mybmt.saveResult(figpath, times, trajectory_box)
     numpath,numstep = trajectory_box.shape
     lastval= trajectory_box[:,numstep-1]#terminal value
     meanval =  np.mean(lastval)#mean of terminal value
