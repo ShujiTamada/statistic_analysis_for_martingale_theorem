@@ -36,8 +36,8 @@ def main():
     sdekey['function_select'] = args.function
 
     figplace = '../figs'#move to fig file
-    figname= str('standard.png')
-    arrayname= str('standrd.npy')
+    figname= str('standard_%s.png'%sdekey['observation'])
+    arrayname= str('standrd_%s.npy'%sdekey['observation'])
     arraypath = os.path.join(figplace,arrayname)
     figpath = os.path.join(figplace,figname)
 

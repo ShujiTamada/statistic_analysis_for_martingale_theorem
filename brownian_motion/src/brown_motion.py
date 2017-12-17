@@ -145,21 +145,22 @@ class brown_motion(sde.SDE_Markov):
 
     """
     this funciton simulation Doob mayer
+    simulation which square brownian motion minus quadalic valuation is martingale.
     """
 
     def brown_motion_Doob_mayer(self,**keyargs):
         path_box,qv_box,times=self.outcome_output()
-        now_position = self.init
-        now_position_square = self.init**2
+        now_position = self.init #init value
+        now_position_square = self.init**2 #square brownian motion init value
         now_position_doob = self.init**2
         now_position_time = 0.
         path_box[:,0]=now_position_doob
         qv_box[:,0]=0
         for k in range(self.division):
-            new_position = self.one_step(now_position)
+            new_position = self.one_step(now_position)# make standard brownian mortion
             new_position_time = now_position_time + self.deltaT
-            new_position_square = new_position**2
-            new_position_doob=new_position_square - now_position_time
+            new_position_square = new_position**2 # make square brownian mortion
+            new_position_doob=new_position_square - now_position_time #square minus quadalic varuation
             qv_box[:,k+1]=qv_box[:,k]+(new_position_doob-now_position_doob)**2
             path_box[:,k+1]=new_position_doob
             now_position = new_position
