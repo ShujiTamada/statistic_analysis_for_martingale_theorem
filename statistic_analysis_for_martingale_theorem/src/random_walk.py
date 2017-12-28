@@ -26,6 +26,8 @@ class random_walk:
           random_variable=(np.random.binomial(1,self.prob,1)*2 -1) *self.jump_size
           return(random_variable)
 
+
+
       '''
       This function is one step.
       All function uses this function.

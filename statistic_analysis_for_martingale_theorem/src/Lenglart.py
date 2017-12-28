@@ -34,7 +34,7 @@ class Lenglart(rd.random_walk):
         right_term_event_true=0 # this is a number which right term event is true.
         for k in range(self.repeat_time):
             now_place=self.init
-            increase_process=self.init
+            increase_process0=self.init
             path_value_box = np.zeros(self.terminal+1) #box for recording path value
             path_value_box[0]=now_place
             switch=True #this is swich to stop path.
@@ -44,7 +44,8 @@ class Lenglart(rd.random_walk):
                     random_variable=np.random.normal(self.normal_mean,self.normal_var)
                     now_place=now_place+random_variable
                     path_value_box[i+1]=now_place
-                    increase_process=increase_process+np.abs(random_variable)
+                    increase_process0=increase_process0+np.abs(random_variable)
+                    increase_process = self.sigmoid(increase_process0)
                 if now_place>self.nu:#stopping time condition
                     switch=False
             X_max=np.max(path_value_box)
@@ -55,3 +56,7 @@ class Lenglart(rd.random_walk):
         prob_left=left_term_event_true/self.repeat_time #make left term probability
         prob_right=self.delta/self.nu+right_term_event_true/self.repeat_time #make right term probability
         return(prob_left,prob_right) #prob_left is left term of equation. prob_right is right term of equation.
+
+    def sigmoid(self,x):
+        val =  np.exp(x)/(1 + np.exp(x))
+        return(val)
